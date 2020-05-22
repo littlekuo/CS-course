@@ -1,0 +1,14 @@
+# 1 cannot stat ./bochsdbg: No such file or directory
+cp bochs bochsdbg
+
+
+
+#2 mkdir: 无法创建目录”/usr/local/share/bochs/keymaps”: 文件已存在
+
+以超级用户进入/usr/local/share/bochs/，执行rm -r keymaps命令
+
+
+# 3 invalid choice 'core2_penryn_t9600' parameter 'model'
+1. bochs -help cpu
+将显示出所有支持的CPU类型
+2. 修改.bochsrc文件中cpu: model=core2+penryn_t9600为cpu: model=上一条查到的所支持的CPU类型之一
