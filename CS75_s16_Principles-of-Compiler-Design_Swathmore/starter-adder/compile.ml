@@ -65,12 +65,15 @@ let rec find (ls : (string * int) list) (x : string) =
       if y = x then Some(v) else find rest x
 
 (** remove the duplicates in binding list*)
-let rec removeDup  (l :  (string * expr) list) =
+let rec removeDup  (l :  (string * expr) list) = 
    match l with
-   | [] -> l
-   | (id, expr) :: rest -> (id, expr) :: removeDup (List.filter (fun elem -> fst elem != id) rest) 
-  
+   | [] -> []
+   | (id, expr) :: rest -> 
+                      (id, expr) :: removeDup (List.filter (fun elem -> (fst elem) <> id) rest) 
+    
+
 let has_unique_key l =
+  (*ignore (Printf.printf "%d\n" (length l)); *)
   length (removeDup l) = length l   
 
 
