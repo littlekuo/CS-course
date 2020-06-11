@@ -203,7 +203,17 @@ val empty = scala.collection.immutable.ListMap[Int,String]()
 def map12_withUpdate = empty + (1 -> "a") + (2 -> "b")
 
 /* Exercise 19 */
-def list2map[K,V](l: List[(K,V)]): ListMap[K,V] = 
+def list2map[K,V](l: List[(K,V)]): ListMap[K,V] = l match{
+  case Nil => ListMap[K,V]()
+  case (k,v) :: m => list2map(m) + (k -> v)
+}
 
 /* Exercise 20 */
-def election(votes: List[String]): ListMap[String,Int] = sys.error("todo")
+def election(votes: List[String]): ListMap[String,Int] = votes match {
+  case Nil => ListMap[String,Int]()
+  case k :: l => { 
+    val m = election(l) 
+    if (m.contains(k)) { m + (k -> (m(k)+1)) } 
+    else { m + (k -> 1) }
+  }
+}
