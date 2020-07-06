@@ -1,13 +1,13 @@
 -- CIS 194 Homework 2
 
-module HW2.Log where
+module Log where
 
 import Control.Applicative
 
 data MessageType = Info
                  | Warning
-                 | Error Int
-  deriving (Show, Eq)
+                 | Error Int 
+                 deriving (Show, Eq)
 
 type TimeStamp = Int
 

@@ -1,6 +1,3 @@
-module HW1.HW1 where
-
-import Test.QuickCheck
 
 --1.
 toDigitsRev :: Integer -> [Integer]
