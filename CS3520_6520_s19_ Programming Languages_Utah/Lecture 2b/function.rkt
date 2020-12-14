@@ -10,13 +10,25 @@
   (appE [s : Symbol]
         [arg : Exp]))
 
-
 (define-type Func-Defn
   (fd [name : Symbol] 
       [arg : Symbol] 
       [body : Exp]))
 
+(module+ test
+  (print-only-errors #t))
 
+;; An EXP is either
+;; - `NUMBER
+;; - `SYMBOL
+;; - `{+ EXP EXP}
+;; - `{* EXP EXP}
+;; - `{SYMBOL EXP)
+
+;; A FUNC-DEFN is
+;; - `{define {SYMBOL SYMBOL} EXP}
+
+;; parse ----------------------------------------
 (define (parse [s : S-Exp]) : Exp
   (cond
     [(s-exp-match? `NUMBER s) (numE (s-exp->number s))]
@@ -32,7 +44,6 @@
            (parse (second (s-exp->list s))))]
     [else (error 'parse "invalid input")]))
 
-
 (define (parse-fundef [s : S-Exp]) : Func-Defn
   (cond
     [(s-exp-match? `{define {SYMBOL SYMBOL} ANY} s)
@@ -40,8 +51,6 @@
          (s-exp->symbol (second (s-exp->list (second (s-exp->list s)))))
          (parse (third (s-exp->list s))))]
     [else (error 'parse-fundef "invalid input")]))
-
-
 
 (module+ test
   (test (parse `2)
@@ -70,12 +79,8 @@
   (define quadruple-def
     (parse-fundef `{define {quadruple x} {double {double x}}})))
 
-
-
-
-;interp
-
-(define (interp [a : Exp] (defs : (Listof Func-Defn))) : Number
+;; interp ----------------------------------------
+(define (interp [a : Exp] [defs : (Listof Func-Defn)]) : Number
   (type-case Exp a
     [(numE n) n]
     [(idE s) (error 'interp "free variable")]
@@ -86,8 +91,6 @@
                                    (fd-arg fd)
                                    (fd-body fd))
                             defs))]))
-
-
 
 (module+ test
   (test (interp (parse `2) empty)
@@ -109,15 +112,13 @@
                 (list double-def quadruple-def))
         32))
 
-
-
+;; get-fundef ----------------------------------------
 (define (get-fundef [s : Symbol] [defs : (Listof Func-Defn)]) : Func-Defn
   (type-case (Listof Func-Defn) defs
     [empty (error 'get-fundef "undefined function")]
     [(cons def rst-defs) (if (eq? s (fd-name def))
                              def
                              (get-fundef s rst-defs))]))
-
 
 (module+ test
   (test (get-fundef 'double (list double-def))
@@ -131,10 +132,7 @@
   (test/exn (get-fundef 'double empty)
             "undefined function"))
 
-
-
-
-
+;; subst ----------------------------------------
 (define (subst [what : Exp] [for : Symbol] [in : Exp])
   (type-case Exp in
     [(numE n) in]
@@ -146,7 +144,6 @@
     [(multE l r) (multE (subst what for l)
                         (subst what for r))]
     [(appE s arg) (appE s (subst what for arg))]))
-
 
 
 (module+ test
@@ -176,16 +173,3 @@
         (parse `{* y 8}))
   (test (subst (parse `8) 'x (parse `{double x}))
         (parse `{double 8})))
-
-
-
-
-
-
-
-
-
-
-
-
-

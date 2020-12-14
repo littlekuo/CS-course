@@ -18,7 +18,6 @@
         [t : Exp]
         [f : Exp]))
 
-;函数定义和别名
 (define-type Func-Defn
   (fd [name : Symbol]
       [arg : Symbol] 
